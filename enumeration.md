@@ -1,3 +1,52 @@
+# Enumeration cheatsheet
+
+## Summary
+* [Enumeration factors](#enumeration-factor-to-check)
+* [Enumerate web application](#enumerate-web-application)
+	* Enumerate directories
+	* Nikto scanning
+	* Bruteforce credentials
+	* Enumerate subdomains
+	* Enumerate parameters
+	* Enumerate file names & file path
+	* Enumerate POST data
+* [Hydra](#hydra)
+	* Bruteforce network services
+	* Bruteforce basic auth
+	* Bruteforce credentials
+	* Bruteforce POST data
+* [Encoding & hashes](#encoding--hashes)
+	* Crack Shadow hashes
+	* Generate hashes
+	* Crack SSH key
+	* Crack hashes
+	* Decode base64
+	* Crack zip file
+	* Generate SSH key
+	* Crack PGP key
+	* Identify hashes
+	* Generate wordlists
+* [Wordpress](#wordpress)
+	* Enumerate Wordpress site
+	* Enumerate Wordpress users
+	* Enumerate Wordpress passwords
+* [Git](#interacting-git-on-cli)
+
+### Enumeration factor to check
+```
+apache default page
+hidden directory
+page source
+inspect page
+subdomains
+parameter
+filename
+web requests with different methods
+401,403,404 enumeration
+Javascript files for any web paths
+functionality in application
+application or system's version
+```
 ### Enumerate web application
 
 Enumerate directories
@@ -75,22 +124,17 @@ Bruteforcing basic auth website
 hydra -l [username] -P [password wordlists] [ip] -s [port] http-get [url]
 hydra -l username -P wordlist -e ns IP http-get /admin/
 hydra -l username -P wordlist -e ns -f IP http-get /admin/index.php
-```
-Bruteforcing credentials
-```
 hydra -C [userpass file] http-get://[url]
 ```
-Bruteforce POST credentials
+Bruteforcing POST data
 ```
 hydra -l admin -P pass.lst -o ok.lst -t 1 -f 127.0.0.1 http-post-form “index.php:name=^USER^&pwd=^PASS^:<title>invalido</title>”
 hydra -l [username] -p [password] example.com http-post-form "/[url]:log=^USER^&pwd=^PASS^:[error]:H=[cookie]"
-```
-Bruteforce POST data with cookies
-```
 hydra -l [username] -P [wordlists] 127.0.0.1 http-post-form "/console/mfa.php:code=^PASS^:F=Incorrect code:H=Cookie: PHPSESSID=gckm1it42pqrbk2hikjk1oseos; user=jason_test_account; pwd=violet"
 ```
 
-### Decoding/encoding & generate wordlist/hashes
+### Encoding & hashes
+#### https://www.guballa.de/vigenere-solver
 Crack hashes from shadow file
 ```
 copy /etc/shadow and /etc/passwd in 2 different files 
