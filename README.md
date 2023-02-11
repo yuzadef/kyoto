@@ -2,7 +2,7 @@
 Refer to below resources for additional information & methodologies to help go through your penetration testing phase.
 
 ## Summary
-* [Exploitation methodologies](#exploitation--methodologies)
+* [Exploitation & methodologies](#exploitation--methodologies)
   * [ExploitDB](#exploitdb)
   * [GtfoBins](#gtfobins)
   * [Nmap NSE](#nmap-nse-scripts)
@@ -20,6 +20,8 @@ Refer to below resources for additional information & methodologies to help go t
   * [Bypass WAF](#bypass-waf)
   * [Google dorking](#google-dorking)
   * [PHP object injection](#php-object-injection)
+  * [Windows commands cheatsheets](#windows-commands-cheatsheet)
+  
 * [Exploitation scripts](#exploitation-scripts)
   * [Awesome Python scripts](#awesome-python-scripts)
   * [Exploit scripts with Python](#ethical-hacking-python-scripts)
@@ -101,6 +103,12 @@ https://exposingtheinvisible.org/guides/google-dorking/
 https://owasp.org/www-community/vulnerabilities/PHP_Object_Injection
 https://nitesculucian.github.io/2018/10/05/php-object-injection-cheat-sheet/
 https://medium.com/swlh/exploiting-php-deserialization-56d71f03282a
+```
+### Windows commands cheatsheet
+```
+https://wadcoms.github.io/#+Enumeration
+https://book.hacktricks.xyz/windows-hardening/basic-cmd-for-pentesters
+https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters
 ```
 
 ## Exploitation scripts
