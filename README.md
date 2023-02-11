@@ -3,9 +3,32 @@ Refer to below resources for additional information & methodologies to help go t
 
 ## Summary
 * [Exploitation methodologies](#exploitation--methodologies)
+  * [ExploitDB](#exploitdb)
+  * [GtfoBins](#gtfobins)
+  * [Nmap NSE](#nmap-nse-scripts)
+  * [Curl cheatsheets](#curl-commands-cheatsheet)
+  * [Network pentesting](#network-pentest-cheatsheet)
+  * [API pentesting](#api-pentesting-cheatsheet)
+  * [Pentesting books](#pentesting-books)
+  * [Payloads all the things](#payloads-all-the-things)
+  * [Zseano's methodologies](#zseanos-methodologies)
+  * [Jexboss for Java](#jexboss-for-testing-java-apps)
+  * [Exploiting Python](#exploiting-python-functions)
+  * [Network pivoting with Chisel](#network-pivoting-with-chisel)
+  * [Active Directory exploitation](#active-directory-exploitation)
+  * [Open authentication exploitation](#open-authentication-exploitation)
+  * [Bypass WAF](#bypass-waf)
+  * [Google dorking](#google-dorking)
+  * [PHP object injection](#php-object-injection)
 * [Exploitation scripts](#exploitation-scripts)
+  * [Awesome Python scripts](#awesome-python-scripts)
+  * [Exploit scripts with Python](#ethical-hacking-python-scripts)
 * [Cracking & de-cracking](#cracking--de-cracking)
+  * [Cyberchef](#cyberchef)
+  * [Crackstation](#crackstation)
+  * [Viginere solver](#viginere-solver)
 * [Artificial intelligence](#artificial-intelligence)
+  * [ChatGPT](#chatgpt)
 
 ## Exploitation & methodologies
 ### ExploitDB
@@ -44,7 +67,7 @@ https://github.com/swisskyrepo/PayloadsAllTheThings
 ```
 https://www.bugbountyhunter.com/methodology/zseanos-methodology.pdf
 ```
-### Jexboss for testing JAVA apps
+### Jexboss for testing Java apps
 ```
 https://github.com/joaomatosf/jexboss
 ```
@@ -56,7 +79,7 @@ https://medium.com/swlh/hacking-python-applications-5d4cd541b3f1
 ```
 https://0xdf.gitlab.io/2020/08/10/tunneling-with-chisel-and-ssf-update.html
 ```
-### Active directory exploitation
+### Active Directory exploitation
 ```
 https://github.com/S1ckB0y1337/Active-Directory-Exploitation-Cheat-Sheet
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-ldap
