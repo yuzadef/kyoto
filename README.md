@@ -3,6 +3,7 @@ Refer to below resources for additional information & methodologies to help go t
 
 ## Summary
 * [Exploitation & methodologies](#exploitation--methodologies)
+  * [web pentesting checklist](#web-pentesting-checklist)
   * [ExploitDB](#exploitdb)
   * [GtfoBins](#gtfobins)
   * [Nmap NSE](#nmap-nse-scripts)
@@ -35,6 +36,10 @@ Refer to below resources for additional information & methodologies to help go t
   * [ChatGPT](#chatgpt)
 
 ## Exploitation & methodologies
+### Web pentesting checklist
+```
+https://github.com/harshinsecurity/web-pentesting-checklist
+```
 ### ExploitDB
 ```
 https://www.exploit-db.com/)
