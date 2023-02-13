@@ -1,4 +1,13 @@
- Open redirection is simply a url such as http://example.com?goto=https://google.com will then visited the URL provided in the parameter
+# Open redirect
+
+## Summary
+* [Common payloads to bypass filter](#common-payload-to-bypass-filter)
+* [Find common vulnerable endpoints](#google-dork-to-find-vulnerable-endpoints)
+* [Using encoding](#using-encoding)
+	* [Double enconding](#sometimes-double-encode-with-help-base-on-how-many-redirects-are-made--parameters)
+	* [Making use of XSS & encoding for redirect](#xss-migh-be-possible-if-it-is-redirected-via-something-like-windowlocation)
+
+Open redirection is simply a url such as http://example.com?goto=https://google.com will then visited the URL provided in the parameter
 
 ## Common payload to bypass filter
 ```
