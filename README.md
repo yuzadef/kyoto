@@ -24,6 +24,7 @@ Refer to below resources for additional information & methodologies to help go t
   * [Windows commands cheatsheets](#windows-commands-cheatsheet)
   * [Exploiting unquoted paths on Windows](#unquoted-service-paths-for-privilege-escalation)
   * [Msfvenom cheatsheet](#msfvenom-cheatsheet)
+  * [Sqlmap cheatsheet](#sqlmap-cheatsheet)
   
 * [Exploitation scripts](#exploitation-scripts)
   * [Awesome Python scripts](#awesome-python-scripts)
@@ -124,6 +125,10 @@ https://vk9-sec.com/privilege-escalation-unquoted-service-path-windows/
 ### Msfvenom cheatsheet
 ```
 https://book.hacktricks.xyz/generic-methodologies-and-resources/shells/msfvenom
+```
+### Sqlmap cheatsheet
+```
+https://niiconsulting.com/checkmate/2014/01/from-sql-injection-to-0wnage-using-sqlmap/
 ```
 
 ## Exploitation scripts
