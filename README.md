@@ -2,7 +2,7 @@
 Refer to below resources for additional information & methodologies to help go through your penetration testing phase.
 
 ## Summary
-* [Exploitation & methodologies](#exploitation--methodologies)
+* [Exploitation resources](#exploitation-resources)
   * [Web pentesting checklist](#web-pentesting-checklist)
   * [ExploitDB](#exploitdb)
   * [GtfoBins](#gtfobins)
@@ -27,6 +27,8 @@ Refer to below resources for additional information & methodologies to help go t
   * [Sqlmap cheatsheet](#sqlmap-cheatsheet)
   * [Pentester land writeups](#pentester-land-writeups)
   * [Bug bounty Writeups](#bug-bounty-writeups)
+  * [Hacking playground](#hacking-playground)
+  
   
 * [Exploitation scripts](#exploitation-scripts)
   * [Awesome Python scripts](#awesome-python-scripts)
@@ -38,7 +40,7 @@ Refer to below resources for additional information & methodologies to help go t
 * [Artificial intelligence](#artificial-intelligence)
   * [ChatGPT](#chatgpt)
 
-## Exploitation & methodologies
+## Exploitation resources
 ### Web pentesting checklist
 ```
 https://github.com/harshinsecurity/web-pentesting-checklist
@@ -139,6 +141,11 @@ https://pentester.land/writeups/
 ### Bug bounty writeups
 ```
 https://www.bugbountyhunting.com/
+```
+### Hacking playground
+```
+https://www.bugbountyhunter.com/training/
+https://www.bugbountyhunter.com/playground
 ```
 
 ## Exploitation scripts
