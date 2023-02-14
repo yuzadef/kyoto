@@ -26,6 +26,7 @@ Refer to below resources for additional information & methodologies to help go t
   * [Msfvenom cheatsheet](#msfvenom-cheatsheet)
   * [Sqlmap cheatsheet](#sqlmap-cheatsheet)
   * [Pentester land writeups](#pentester-land-writeups)
+  * [Bug bounty Writeups](#bug-bounty-writeups)
   
 * [Exploitation scripts](#exploitation-scripts)
   * [Awesome Python scripts](#awesome-python-scripts)
@@ -134,6 +135,10 @@ https://niiconsulting.com/checkmate/2014/01/from-sql-injection-to-0wnage-using-s
 ### Pentester land writeups
 ```
 https://pentester.land/writeups/
+```
+### Bug bounty writeups
+```
+https://www.bugbountyhunting.com/
 ```
 
 ## Exploitation scripts
