@@ -81,6 +81,8 @@ dnsrecon -n 10.10.142.241 -d undiscovered.thm -D /usr/share/wordlists/SecLists/D
 wfuzz -c -f dns.txt -w wordlist.txt -u 'http://example.com' -H 'Host:FUZZ.example.com' --hw 290 --hc 404,302
 gobuster vhost -u http://example.com/ -w wordlists.txt | grep 200
 gobuster dns -d example.com -w wordlist.txt
+subfinder -d jotform.com -silent | tee domains.txt
+
 ```
 Enumerate url parameters
 ```
