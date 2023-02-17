@@ -151,6 +151,7 @@ https://www.bugbountyhunter.com/playground
 ### Bug bounty tips
 ```
 https://bugbountytip.tech/
+https://www.bugbountyhunter.com/articles/?on=hackingonbb
 ```
 
 ## Exploitation scripts
