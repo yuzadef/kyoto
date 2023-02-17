@@ -28,6 +28,7 @@ Refer to below resources for additional information & methodologies to help go t
   * [Pentester land writeups](#pentester-land-writeups)
   * [Bug bounty Writeups](#bug-bounty-writeups)
   * [Hacking playground](#hacking-playground)
+  * [Bug bounty tips](#bug-bounty-tips)
   
   
 * [Exploitation scripts](#exploitation-scripts)
@@ -146,6 +147,10 @@ https://www.bugbountyhunting.com/
 ```
 https://www.bugbountyhunter.com/training/
 https://www.bugbountyhunter.com/playground
+```
+### Bug bounty tips
+```
+https://bugbountytip.tech/
 ```
 
 ## Exploitation scripts
