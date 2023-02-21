@@ -29,6 +29,7 @@ Refer to below resources for additional information & methodologies to help go t
   * [Bug bounty Writeups](#bug-bounty-writeups)
   * [Hacking playground](#hacking-playground)
   * [Bug bounty tips](#bug-bounty-tips)
+  * [Hacktricks](#hacktricks)
   
   
 * [Exploitation scripts](#exploitation-scripts)
@@ -152,6 +153,10 @@ https://www.bugbountyhunter.com/playground
 ```
 https://bugbountytip.tech/
 https://www.bugbountyhunter.com/articles/?on=hackingonbb
+```
+### Hacktricks
+```
+https://book.hacktricks.xyz/welcome/readme
 ```
 
 ## Exploitation scripts
