@@ -3,10 +3,10 @@
 ## Summary
 * [Enumeration factors](#enumeration-factor-to-check)
 * [Enumerate web application](#enumerate-web-application)
-	* Enumerate directories
-	* Nikto scanning
-	* Bruteforce credentials
-	* Enumerate subdomains
+	* Enumerate directories(#enumerate-directories)
+	* Nikto scanning(#nikto-scanning)
+	* Bruteforce credentials(#bruteforce-credentials)
+	* Enumerate subdomains(#enumerate-subdomains)
 	* Enumerate parameters
 	* Enumerate file names & file path
 	* Enumerate POST data
@@ -70,6 +70,7 @@ ffuf -w [wordlists] -X [request method] -d "username=FUZZ&email=x&password=x&cpa
 ffuf -w [username.txt]:W1,[password.txt]:W2 -X [request method] -d "username=W1&password=W2" -H "Content-Type: application/x-www-form-urlencoded" -u [url] -fc 200
 ```
 Enumerate subdomains
+Always try enumerating with both HTTP & HTTPS
 ```
 wfuzz -c --hw 977 -u [url] -H "Host: FUZZ.[domain]" -w /usr/share/wordlists/SecLists/Discovery/DNS/subdomains-top1million-5000.txt
 wfuzz -c -w /usr/share/wordlists/SecLists/Discovery/DNS/subdomains-top1million-5000.txt -u "[url]" -H "Host: FUZZ.[hostname]" --hw 290
@@ -79,7 +80,7 @@ ffuf -w [wordlists] -H "Host:FUZZ.domain" -u [url]
 amass enum --passive -d example.com
 dnsrecon -n 10.10.142.241 -d undiscovered.thm -D /usr/share/wordlists/SecLists/Discovery/DNS/subdomains-top1million-5000.txt -t brt
 wfuzz -c -f dns.txt -w wordlist.txt -u 'http://example.com' -H 'Host:FUZZ.example.com' --hw 290 --hc 404,302
-gobuster vhost -u http://example.com/ -w wordlists.txt | grep 200
+gobuster vhost -u http://example.com/ -w wordlists.txt --append-domain
 gobuster dns -d example.com -w wordlist.txt
 subfinder -d jotform.com -silent | tee domains.txt
 
