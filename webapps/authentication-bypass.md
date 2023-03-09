@@ -1,3 +1,23 @@
+# Authentication bypass
+
+## Summary
+* [Exploiting password-based login](#exploiting-password-based-login)
+	* [Username enumeration via different responses](#username-enumeration-via-different-responses)
+	* [Username enumeration via subtly different responses](#username-enumeration-via-subtly-different-responses)
+	* [Username enumeration via response timing](#username-enumeration-via-response-timing)
+	* [Username enumeration via account lock](#username-enumeration-via-account-lock)
+	* [Broken brute-force protection with IP block](#broken-brute-force-protection-with-ip-block)
+	* [Broken brute-force protection with multiple credentials per request](#broken-brute-force-protection-with-multiple-credentials-per-request)
+* [Exploiting multi-factor authentications](#exploiting-multi-factor-authentications)
+	* [2FA simple bypass](#2fa-simple-bypass)
+	* [2FA broken login](#2fa-broken-logic)
+* [Exploiting other authentications mechanisms](#exploiting-other-authentications-mechanisms)
+	* [Brute-forcing a stay-logged-in cookie](#brute-forcing-a-stay-logged-in-cookie)
+	* [Stealing stay-logged-in cookie with XSS](#stealing-stay-logged-in-cookie-with-xss)
+	* [Password reset exploitation due to weak implementation](#password-reset-exploitation-due-to-weak-implementation)
+	* [Password reset poisoning via middleware](#password-reset-poisoning-via-middleware)
+	* [Password brute-forced via change password functionality](#password-brute-forced-via-change-password-functionality)
+
 ## Exploiting password-based login
 ### Username enumeration via different responses
 ```
@@ -86,7 +106,7 @@
 > filter the results to hide responses with a 200 status code and sort the remaining results by username
 > using the brute-forced credentials, log in into the application
 ```
-### Broken brute-force protection, multiple credentials per request
+### Broken brute-force protection with multiple credentials per request
 ```
 > login into the application with arbitrary value and send the request to repeater
 > notice that the POST /login request submits the login credentials in JSON format
