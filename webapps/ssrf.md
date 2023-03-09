@@ -12,7 +12,7 @@ SSRF is a web security vulnerability that allows an attacke to induce the server
 * [Bypassing blind SSRF filters](#bypassing-blind-ssrf-filters)
 	* [Blind SSRF with out-of-band detection](#blind-ssrf-with-out-of-band-detection)
 	* [Blind SSRF with Shellshock exploitation](#blind-ssrf-with-shellshock-exploitation)
-	* 
+
 ### Finding hidden attack surface for SSRF vulnerability
 ```
 > partial URLs in requests
